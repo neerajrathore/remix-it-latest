@@ -1,7 +1,9 @@
-import newNoteStyles from './NewNote.css';
+import { LinksFunction } from '@remix-run/node';
+import newNoteStyles from '~/components/NewNote.css';
 
 function NewNote() {
   return (
+    //it will automatically send the request to currently active path.
     <form method="post" id="note-form">
       <p>
         <label htmlFor="title">Title</label>
@@ -9,10 +11,10 @@ function NewNote() {
       </p>
       <p>
         <label htmlFor="content">Content</label>
-        <textarea id="content" name="content" rows="5" required />
+        <textarea id="content" name="content" rows={5} required />
       </p>
       <div className="form-actions">
-        <button>Add Note</button>
+        <button>Add Notes</button>
       </div>
     </form>
   );
@@ -20,6 +22,6 @@ function NewNote() {
 
 export default NewNote;
 
-export function links() {
+export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: newNoteStyles }];
 }

@@ -1,6 +1,6 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
-import homeStyles from "~/styles/home.css";
+import homeStyles from "../styles/home.css?url";
 
 export const meta: MetaFunction = () => {
   return [
@@ -22,6 +22,8 @@ export default function Index() {
 }
 
 // this style only applies to this file but can clash with some other file same names
-export const links = () => {
+
+// this below is causing page reload on click.
+export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: homeStyles }]
 }

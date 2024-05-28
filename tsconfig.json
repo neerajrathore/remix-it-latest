@@ -5,14 +5,7 @@
     "**/.server/**/*.ts",
     "**/.server/**/*.tsx",
     "**/.client/**/*.ts",
-    "**/.client/**/*.tsx",
-
-    "**/*.js",
-    "**/*.jsx",
-    "**/.server/**/*.js",
-    "**/.server/**/*.jsx",
-    "**/.client/**/*.js",
-    "**/.client/**/*.jsx"
+    "**/.client/**/*.tsx"
   ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
@@ -23,6 +16,7 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
+    // "allowSyntheticDefaultImports": true,
     "target": "ES2022",
     "strict": true,
     "allowJs": true,

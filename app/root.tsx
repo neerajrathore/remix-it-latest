@@ -5,7 +5,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import MainStyle from '~/styles/main.css'
+import MainStyle from '~/styles/main.css?url'
 import MainNavigation from "./components/MainNavigation";
 
 export function Layout({ children }: { children: React.ReactNode }) {
