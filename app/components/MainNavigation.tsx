@@ -1,6 +1,6 @@
 import { NavLink } from '@remix-run/react';
 
-// import newNoteStyles from './NewNote.css';
+import newNoteStyles from './NewNote.css?url';
 
 function MainNavigation() {
   return (
@@ -19,7 +19,7 @@ function MainNavigation() {
 
 export default MainNavigation;
 
-// export function links() {
-//   return [{ rel: 'stylesheet', href: newNoteStyles }];
-// }
+export function links() {
+  return [{ rel: 'stylesheet', href: newNoteStyles }];
+}
 

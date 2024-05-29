@@ -1,5 +1,5 @@
 import { LinksFunction } from '@remix-run/node';
-import newNoteStyles from '~/components/NewNote.css';
+import newNoteStyles from '~/components/NewNote.css?url';
 
 function NewNote() {
   return (
