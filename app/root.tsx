@@ -5,7 +5,8 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import MainStyle from '~/styles/main.css?url'
+// root layout will always be processed on the server side so don't import css using ?url  
+import MainStyle from '~/styles/main.css'
 import MainNavigation from "./components/MainNavigation";
 
 export function Layout({ children }: { children: React.ReactNode }) {

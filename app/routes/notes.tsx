@@ -1,11 +1,12 @@
 import { LinksFunction } from '@remix-run/node';
 import { redirect, useLoaderData } from '@remix-run/react';
-import NewNote, { links as newNoteStyle } from '~/components/NewNote';
 import { getStoredNotes, storeNotes } from '~/data/notes'
+import NewNote, { links as newNoteStyle } from '~/components/NewNote';
 import NoteList, { links as notesListStyle } from '~/components/display-notes/NoteList'
 // don't do import NewNoteStyle from '~/components/NewNote.css' instead use surfacing style
 
 export default function NotesPage() {
+  // access data returned by loader 
   const notes = useLoaderData();
   console.log(notes, 'notes');
   return (
@@ -22,10 +23,10 @@ export default function NotesPage() {
 // runs on backend
 export async function loader() {
   const notes = await getStoredNotes()
-  // this remix does under the hood 
+  // you can also do that this remix does under the hood 
   // return new Response(JSON.stringify(notes), {headers: {"Content-Type": "application/json"}})
 
-  return notes  // same as above 
+  return notes  // same as above json(notes)
 }
 
 // remix will be looking for this keyword just like links reserved
