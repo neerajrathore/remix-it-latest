@@ -3,14 +3,13 @@ import { json, Link, redirect, useLoaderData } from '@remix-run/react';
 import { getStoredNotes, storeNotes } from '~/data/notes'
 import NewNote, { links as newNoteStyle } from '~/components/NewNote';
 import NoteList, { links as notesListStyle } from '~/components/display-notes/NoteList'
-// don't do import NewNoteStyle from '~/components/NewNote.css' instead use surfacing style
+// Instead of importing styles directly, use the `links` function to surface CSS from components.
 
 export default function NotesPage() {
-  // access data returned by loader 
+  // Access the data returned by the loader function
   const notes = useLoaderData();
 
-  // we don't show loading spinner while data is being loaded 
-  // remix only serves the finished pages once data has been loaded
+  // No loading spinner is needed since Remix only serves pages after data is fully loaded.
   console.log(notes, 'useLoaderData');
   return (
     <main>
@@ -20,73 +19,77 @@ export default function NotesPage() {
   );
 };
 
-// whenever we reach to this page and get request is used 
-// loader function is used to fetch data
-// fetching data is also done on backend
-// runs on backend
-// after action trigger, loader also calls to get updated data
+// The loader function runs whenever a GET request is made to this route.
+// It fetches data on the server side.
+// This also runs again after an action to update the data.
 export async function loader() {
-  console.log("loader function");
-  const notes = await getStoredNotes()
-  // you can also do that this remix does under the hood 
+  console.log("loader function in notes.tsx");
+  const notes = await getStoredNotes();
+
+  // Optionally, you can manually return a Response object, 
+  // but Remix automatically wraps the data in a response.
+  // Example:
   // return new Response(JSON.stringify(notes), {headers: {"Content-Type": "application/json"}})
 
-  // return new error response 
+  // Return an error response if no notes are found.
   if(!notes || notes.length === 0){
-    // throw to generate error response not return
-    // throw new Response()
-    throw json({ message: 'error occurred' }, {
+    // Use `throw` to create an error response instead of returning it.
+    throw json({ message: 'No notes found in loader' }, {
       status: 404,
-      statusText: "not found"
-    })
+      statusText: "Not Found"
+    });
   }
 
-  return notes  // same as above json(notes)
+  return notes  // The `json()` function wraps the notes data in a JSON response.
 }
 
-// remix will be looking for this keyword just like links reserved
-// we are using web standard objects and methods like request is formed by browser
-// runs on backend
-// backend request(going to route also trigger fetch request) trigger this action function
+// The action function handles non-GET requests (e.g., POST) to this route.
+// This runs on the server whenever the frontend makes a request, like submitting a form.
 export async function action(data: any) {
   console.log("action function");
 
-  // console.log(data.request.formData());
+  // Parse form data sent from the frontend.
   const formData = await data.request.formData()
   const noteData = Object.fromEntries(formData)
   console.log(noteData, formData, Object.entries(formData), Object.fromEntries(formData));
 
-  // validation
+  // Simple validation: Ensure the note title has more than 5 characters.
   if (noteData.title.trim().length < 5) {
-    return { message: "enter more than 5 character" }
+    return { message: "Title must be more than 5 characters" }
   }
 
-  // getting existing notes
+  // Retrieve existing notes.
   const existingNotes = await getStoredNotes()
-  noteData.id = new Date().toISOString()
+  noteData.id = new Date().toISOString() // Assign a unique ID based on the current timestamp.
+  
+  // Add the new note to the list and store it.
   const updatedNotes = existingNotes.concat(noteData)
   await storeNotes(updatedNotes)
 
-  // slowing backend calls a little bit
+  // Simulate a delay to slow down backend calls.
   await new Promise<void>((res, rej) => {
     setTimeout(() => {
       res()
     }, 1000)
   })
+  
+  // Redirect the user back to the notes page after saving.
   return redirect('/notes')
 }
 
-// surfacing styles 
+// Use the `links` function to load styles from different components when this route is accessed.
 export const links: LinksFunction = () => {
   return [...newNoteStyle(), ...notesListStyle()]
 }
 
-// more specific return related to notes route
+// This ErrorBoundary component renders when there is an error specific to the notes route.
+// It shows an error message and a link to return to the homepage.
 export function ErrorBoundary() {
   return (
     <main className="error">
-      <h1>error occurred in notes page </h1>
-      <p><Link to={'/'}>Back</Link></p>
+      <NewNote />
+      <h1>An error occurred on the notes page</h1>
+      <p><Link to={'/'}>Back to homepage</Link></p>
     </main>
   )
 }
