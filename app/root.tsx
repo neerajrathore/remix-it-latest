@@ -1,4 +1,5 @@
 import {
+  isRouteErrorResponse,
   Link,
   Links,
   Meta,
@@ -45,9 +46,18 @@ export default function App() {
 
 // The ErrorBoundary component handles errors that occur within any routes.
 // It serves as a fallback UI when an error is encountered, ensuring the app does not crash entirely.
-export function ErrorBoundary () {
-  const error = useRouteError(); // Retrieves the error information from the current route.
-  console.log(error, typeof error, ".........................");
+export function ErrorBoundary() {
+  const error: any = useRouteError(); // Retrieves the error information from the current route.
+
+  // for handling wrong route handle
+  if (isRouteErrorResponse(error)) {
+    return (
+      <main>
+        <p className='info-message'>Status: {error.status}</p>
+        <p className='info-message'>{error.data}</p>
+      </main>
+    )
+  }
 
   return (
     <html lang="en">
@@ -56,16 +66,14 @@ export function ErrorBoundary () {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        <title>An error occurred in root</title>
+        <title>{error.statusText}</title>
       </head>
       <body>
         <header>
           <MainNavigation />
         </header>
         <main className="error">
-          <h1>An error occurred</h1>
-          {/* Optionally display the error message if needed */}
-          {/* <p>{error}</p> */}
+          <h1>{error.data || "something went wrong"}</h1>
           <p>
             <Link to="/">Back to homepage</Link>
           </p>

@@ -1,5 +1,5 @@
 import { LinksFunction } from '@remix-run/node';
-import { json, Link, redirect, useLoaderData } from '@remix-run/react';
+import { json, Link, redirect, useLoaderData, isRouteErrorResponse, useRouteError } from '@remix-run/react';
 import { getStoredNotes, storeNotes } from '~/data/notes'
 import NewNote, { links as newNoteStyle } from '~/components/NewNote';
 import NoteList, { links as notesListStyle } from '~/components/display-notes/NoteList'
@@ -26,13 +26,11 @@ export async function loader() {
   console.log("loader function in notes.tsx");
   const notes = await getStoredNotes();
 
-  // Optionally, you can manually return a Response object, 
   // but Remix automatically wraps the data in a response.
-  // Example:
-  // return new Response(JSON.stringify(notes), {headers: {"Content-Type": "application/json"}})
+  // Example return new Response(JSON.stringify(notes), {headers: {"Content-Type": "application/json"}})
 
   // Return an error response if no notes are found.
-  if(!notes || notes.length === 0){
+  if (!notes || notes.length === 0) {
     // Use `throw` to create an error response instead of returning it.
     throw json({ message: 'No notes found in loader' }, {
       status: 404,
@@ -61,7 +59,6 @@ export async function action(data: any) {
   // Retrieve existing notes.
   const existingNotes = await getStoredNotes()
   noteData.id = new Date().toISOString() // Assign a unique ID based on the current timestamp.
-  
   // Add the new note to the list and store it.
   const updatedNotes = existingNotes.concat(noteData)
   await storeNotes(updatedNotes)
@@ -72,7 +69,6 @@ export async function action(data: any) {
       res()
     }, 1000)
   })
-  
   // Redirect the user back to the notes page after saving.
   return redirect('/notes')
 }
@@ -84,11 +80,24 @@ export const links: LinksFunction = () => {
 
 // This ErrorBoundary component renders when there is an error specific to the notes route.
 // It shows an error message and a link to return to the homepage.
-export function ErrorBoundary() {
+// also it works in the place of outlet in root.tsx
+export function ErrorBoundary(data: any) {
+  const error: any = useRouteError()
+  console.log({ error, data, }, isRouteErrorResponse(error), "message error");
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <main>
+        <NewNote />
+        <p className='info-message'>Status: {error.status}</p>
+        <p className='info-message'>{error.data.message} please add some</p>
+      </main>
+    );
+  }
+
   return (
     <main className="error">
-      <NewNote />
-      <h1>An error occurred on the notes page</h1>
+      <h1>{error.message} error occurred on the notes page</h1>
       <p><Link to={'/'}>Back to homepage</Link></p>
     </main>
   )

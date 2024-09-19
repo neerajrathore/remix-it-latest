@@ -1,5 +1,4 @@
 import { NavLink } from '@remix-run/react';
-
 import newNoteStyles from './NewNote.css?url';
 
 function MainNavigation() {
