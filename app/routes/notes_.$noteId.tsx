@@ -26,26 +26,25 @@ export async function loader({ params }: any) {
     const selectedNote = storedNotes.find((item: any) => item.id === params.noteId)
     if (!selectedNote) {
         console.log("not found note");
-
-        // throw json({ message: 'note not found' }, {
-        //     status: 404,
-        //     statusText: "Not Found"
-        // });
+        throw json({ message: 'could not found note for id' + params.noteId }, {
+            status: 404,
+            statusText: "Not Found"
+        });
     }
     return selectedNote
 }
 
+// data is returned by loader 
 export function meta({ data }: any) {
     console.log(data, "..................");
+    if (!data) {
+        return {};
+    }
 
-    // if (!data) {
-    //   return {};
-    // }
-
-    // return {
-    //   title: data.title,
-    //   description: 'Manage your notes with ease.',
-    // };
+    return [{
+        title: data.title,
+        description: 'Manage your notes with ease.',
+    }];
 }
 
 export function links() {

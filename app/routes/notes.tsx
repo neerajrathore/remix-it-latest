@@ -102,3 +102,10 @@ export function ErrorBoundary(data: any) {
     </main>
   )
 }
+
+export function meta() {
+  return [{
+    title: "All notes",
+    description: "Browse notes here"
+  }]
+}
